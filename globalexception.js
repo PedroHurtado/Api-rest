@@ -1,7 +1,7 @@
-export default function(fn){
-    return function(req,res,next){
+export default function(cb){
+    return async function(req,res,next){
         try{
-            fn(req,res,next);
+            await cb(req,res,next);
             next();
         }
         catch(err){

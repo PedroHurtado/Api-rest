@@ -12,6 +12,7 @@ const app = express()
 
 const {v1,v2} =versions;
 
+
 app.use(function(err,req,res,next){
   console.log('error')
   res.status(500).end('pendiente de resolver')
