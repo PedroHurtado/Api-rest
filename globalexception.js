@@ -1,7 +1,8 @@
-export default function(){
+export default function(fn){
     return function(req,res,next){
         try{
-            next()
+            fn(req,res,next);
+            next();
         }
         catch(err){
             next(err);

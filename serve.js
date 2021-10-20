@@ -7,7 +7,7 @@ import { jwt } from './jwt.js';
 import {body } from 'express-validator'
 import validator from './validator.js';
 import { Forbiden } from './customerros.js';
-//import globalExpception from './globalexception.js'
+import globalExpception from './globalexception.js'
 const app = express()
 
 const {v1,v2} =versions;
@@ -104,32 +104,25 @@ return access_token;
 }
 
 v1.post('/login',
-body('user').isEmail(),
-body('password').isLength({ min: 5 }),
-validator(),
-//globalExpception(),
-async function(req,res,next){
-  //12345
-  const pwdBd='$2b$10$2TmhnTeoxN70yoewCV65N.P3u2ue4BoGEoFbaTC..zS4S5CAMwwwK'
-  const {user,password} = req.body;
-
-  
-
-  const pwd = bcrypt.hashSync(password, 10);
-  try{
-    if(bcrypt.compareSync(password,pwdBd)){
-      const token = await generateJWT(user,"admin")
-      res.json({token:token})
-    }else{
-      throw new Forbiden({data:'usuario y contraseña invalidos'})
-    }
-  }catch(err){
-    next(err);
-  }
-  
-  
-
-})
+      body('user').isEmail(),
+      body('password').isLength({ min: 5 }),
+      validator(),
+      globalExpception(
+        async function(req,res){
+          //12345
+          const pwdBd='$2b$10$2TmhnTeoxN70yoewCV65N.P3u2ue4BoGEoFbaTC..zS4S5CAMwwwK'
+          const {user,password} = req.body;
+          const pwd = bcrypt.hashSync(password, 10);
+        
+            if(bcrypt.compareSync(password,pwdBd)){
+              const token = await generateJWT(user,"admin")
+              res.json({token:token})
+            }else{
+              throw new Forbiden({data:'usuario y contraseña invalidos'})
+            }
+          })   
+      ),
+        
 
 
 
